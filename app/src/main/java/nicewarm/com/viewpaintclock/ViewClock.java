@@ -54,6 +54,7 @@ public class ViewClock extends View {
     private int strongLineLength = 100;
     private int color = Color.parseColor("#0096db");
     private Paint paintDegreee;
+    private int circlePointRadios= 10;
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -66,6 +67,7 @@ public class ViewClock extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.save();
         /*画大圈*/
         canvas.drawCircle(mWidth / 2, mHeight / 2, mWidth / 2 - circleStroke, circlePaint);
 
@@ -85,6 +87,10 @@ public class ViewClock extends View {
             }
             canvas.rotate(6, mWidth / 2, mHeight / 2);
         }
+        canvas.restore();
+        /*画圆心点*/
+
+        canvas.drawCircle(mWidth/2,mHeight/2,circlePointRadios,paintDegreee);
 
     }
 }
