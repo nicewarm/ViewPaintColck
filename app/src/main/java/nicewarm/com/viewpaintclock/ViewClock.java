@@ -56,6 +56,7 @@ public class ViewClock extends View {
         for (int i = 0; i < timeArray.length; i++) {
             time[i] = Integer.parseInt(timeArray[i]);
         }
+        /*重绘*/
         invalidate();
     }
 
@@ -63,11 +64,12 @@ public class ViewClock extends View {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            /*更新时间*/
             updateTime();
         }
     }
 
-    /* 时间戳转换成字符窜 */
+    /* 时间戳转换成时分秒 */
     public static String getDateToStringLong(long time) {
         try {
             Date d = new Date(time);
@@ -120,29 +122,41 @@ public class ViewClock extends View {
 
         /*画刻度线*/
         for (int i = 0; i < 60; i++) {
+            /*画有刻度的线*/
             if (i % 5 == 0) {
+                /*设置线的宽度*/
                 paintDegreee.setStrokeWidth(strongLineStroke);
+                /*刻度字体的大小*/
                 paintDegreee.setTextSize(30);
+                /*画线*/
                 canvas.drawLine(mWidth / 2, mHeight / 2 - mWidth / 2 + strongLineStroke, mWidth / 2, mHeight / 2 - mWidth / 2 + strongLineLength, paintDegreee);
                 int degreeValue = i / 5 == 0 ? 12 : i / 5;
                 String degree = String.valueOf(degreeValue);
+                /*画文字*/
                 canvas.drawText(degree, mWidth / 2 - paintDegreee.measureText(degree) / 2,
                         mHeight / 2 - mWidth / 2 + strongLineLength + 50, paintDegreee);
             } else {
+                /*画无刻度的线*/
                 paintDegreee.setStrokeWidth(lineStroke);
                 canvas.drawLine(mWidth / 2, mHeight / 2 - mWidth / 2 + lineStroke, mWidth / 2, mHeight / 2 - mWidth / 2 + lineLength, paintDegreee);
             }
+            /*旋转6°*/
             canvas.rotate(6, mWidth / 2, mHeight / 2);
         }
+        /*恢复画布*/
         canvas.restore();
+
+
         /*画圆心点*/
         canvas.drawCircle(mWidth / 2, mHeight / 2, circlePointRadios, paintDegreee);
 
         /*画指针*/
         /*秒针*/
         canvas.save();
+        /*先旋转180°，因为0°时向下，而表的0°是向上*/
         canvas.rotate(180, mWidth / 2, mHeight / 2);
         int degree = time[2] * 360 / 60;
+        /*根据时间旋转角度*/
         canvas.rotate(degree, mWidth / 2, mHeight / 2);
         paintDegreee.setStrokeWidth(10);
         canvas.drawLine(mWidth / 2, mHeight / 2 + distanceFromCenter, mWidth / 2, mHeight / 2 + mWidth / 2 - distanceSecondFromEdge, paintDegreee);
