@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -43,12 +45,26 @@ public class ViewClock extends View {
         paintDegreee.setStyle(Paint.Style.FILL);
         paintDegreee.setAntiAlias(true);
         paintDegreee.setStrokeWidth(3);
+        updateTime();
+        handle = new NiceHandle();
+
+    }
+
+    public void updateTime (){
         timeStr = getDateToStringLong(System.currentTimeMillis());
         String[] timeArray = timeStr.split(":");
         for (int i = 0; i < timeArray.length; i++) {
             time[i] = Integer.parseInt(timeArray[i]);
         }
+        invalidate();
+    }
 
+    private class NiceHandle extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            updateTime();
+        }
     }
 
     /* 时间戳转换成字符窜 */
@@ -80,6 +96,7 @@ public class ViewClock extends View {
     private int distanceSecondFromEdge ;
     private int distanceMinFromEdge ;
     private int distanceHourFromEdge ;
+    private NiceHandle handle;
 
 
     @Override
@@ -149,5 +166,6 @@ public class ViewClock extends View {
         canvas.drawLine(mWidth / 2, mHeight / 2 + distanceFromCenter, mWidth / 2, mHeight / 2 + mWidth / 2 - distanceHourFromEdge, paintDegreee);
         canvas.restore();
 
+        handle.sendEmptyMessage(0);
     }
 }
